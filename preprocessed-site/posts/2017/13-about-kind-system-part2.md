@@ -410,7 +410,7 @@ infixr 0 `(->)`
 Maybe * :: *
 ```
 これらをもっと視覚的にまとめてみましょう。型が結びついている種は、どのような型が昇格したものかをまとめてみると、以下のようなグラフの形になるわけです:
-![kind graph](../../img/posts/2017/12-01-kind-graph.png)
+![kind graph](../../img/posts/2017/13-01-kind-graph.png)
 
 `'Nothing :: Maybe a`であることに注意してください。`'Nothing`は種多相化されているので、`'Nothing :: Maybe *`とすることも、`'Nothing :: Maybe Bool`とすることも可能です[^notice-bool-data-promotion]。
 
@@ -599,6 +599,18 @@ CallStack (from HasCallStack):
 
 ### この章のまとめ
 
+この章では、型制約を表す種`Constraint`の紹介、型を種に、値を型に昇格する`DataKinds`拡張の紹介、そしてプリミティブ型の種とGHCの型の大別について、お話ししました。
+
+型制約には型制約種`Constraint`という種がつくのでした。データ宣言が型コンストラクタと値コンストラクタを作るように、型クラスは型制約コンストラクタと型制約下でのメソッド群を作るものとみることができました。また、型制約は、`=>`によって制約が満たされるか検査されるのでしたね。ただ、Haskell標準では型制約は決まった形状でしか書けませんでした。そのため、`ConstraintKinds`拡張が用意されており、この拡張によって型制約種を持つものならば変数であろうと型制約のペアであろうと、型制約として扱えるようになるのでした。また、この拡張によって、型制約のエイリアスも書けるようになりました。
+
+`DataKinds`はデータ型の型コンストラクタを種において使えるように、値コンストラクタを型において使えるようにするものでした。値コンストラクタは、昇格の際先頭に`'`をつけるのでした。また、Haskellの種全般が、何かしらの型が昇格したものとみなせるという話もしましたね。`*`ですら、一つのデータ型でした。
+
+最後に、GHCのプリミティブ型、ボックス型、lifted型という大別を紹介しました。
+
+* プリミティブ型は、Haskellでは定義できないGHCが事前に用意してくれている型でした。例えば`Int#`、`Array#`などがそうです。
+* ボックス型の値は、ポインタで表現されヒープ上に本体を持ちました。非ボックス型の値は、実データとして表現されます。
+* lifted型の値は、評価されるまではサンクを指すポインタとなっており、`undefined`などの評価すると例外になるようなものや無限ループでさえ値として持ち得るのでした。unlifted型の値は、サンクを持たず、正格に評価されるのでした。
+
 以降では、少し高度な種に関する話題を紹介していきます。あまり知られてない機能や最近入った機能、まだ入ってない提案中のものなども紹介していきます。これらの話題は、最初に掲げた想定読者層から外れているのであまり詳しくは紹介しません。こんな話もあるんだぐらいに留めておいてもらえれば、良いでしょう。
 
 ## Advanced Topics
@@ -636,7 +648,7 @@ CallStack (from HasCallStack):
 * [GHC Developer Wiki](https://ghc.haskell.org/trac/ghc/): GHCの実装に関する事や、その元となるアイデアについてまとめられているWikiです。
     - [Commentary/Compiler/Kinds](https://ghc.haskell.org/trac/ghc/wiki/Commentary/Compiler/Kinds): この記事のストーリーを決める際に参照しました。
     - [Commentary/Compiler/TypeType](https://ghc.haskell.org/trac/ghc/wiki/Commentary/Compiler/TypeType): 
-    - [Commentary/Rts/Storage/HeapObjects](https://ghc.haskell.org/trac/ghc/wiki/Commentary/Rts/Storage/HeapObjects): GHCオブジェクトの内部表現について書かれています。**lifted/unlifted**、**boxed/unboxed**の違いについて、参考にしました。
+    - [Commentary/Rts/Storage/HeapObjects](https://ghc.haskell.org/trac/ghc/wiki/Commentary/Rts/Storage/HeapObjects): GHCオブジェクトの内部表現について書かれています。lifted/unlifted、boxed/unboxedの違いについて、参考にしました。
     - [GhcKinds](https://ghc.haskell.org/trac/ghc/wiki/GhcKinds): 
     - [UnliftedDataTypes](https://ghc.haskell.org/trac/ghc/wiki/UnliftedDataTypes): 
     - [NoSubKinds](https://ghc.haskell.org/trac/ghc/wiki/NoSubKinds): 
